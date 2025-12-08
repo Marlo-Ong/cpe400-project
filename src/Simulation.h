@@ -6,17 +6,21 @@
 #include "Node.h"
 #include "Protocol.h"
 
+struct Config {
+    int numNodes;
+    int simTime;
+    int totalChannels;
+};
+
 class Simulation {
 public:
-    Simulation(int numNodes, int simTime, int totalChannels, Protocol& protocol);
+    Simulation(Config config, Protocol& protocol);
 
     void run();
     void printResults() const;
 
 private:
-    int numNodes;
-    int simTime;
-    int totalChannels;
+    Config config;
     Protocol& protocol;
     std::vector<Node> nodes;
 };

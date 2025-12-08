@@ -3,23 +3,20 @@
 #include <iostream>
 #include <numeric>
 
-Simulation::Simulation(int nodeCount, int duration, int channels, Protocol& proto)
-    : numNodes(nodeCount),
-      simTime(duration),
-      totalChannels(channels),
-      protocol(proto) {
-    nodes.reserve(numNodes);
-    for (int i = 0; i < numNodes; ++i) {
+Simulation::Simulation(Config config, Protocol& protocol)
+    : config(config), protocol(protocol) {
+    nodes.reserve(config.numNodes);
+    for (int i = 0; i < config.numNodes; ++i) {
         nodes.emplace_back(i);
     }
 }
 
 void Simulation::run() {
-    for (int t = 0; t < simTime; ++t) {
+    for (int t = 0; t < config.simTime; ++t) {
         for (auto& node : nodes) {
             node.update(t);
         }
-        protocol.update(nodes, t, totalChannels);
+        protocol.update(nodes, t, config.totalChannels);
     }
 }
 
@@ -32,7 +29,7 @@ void Simulation::printResults() const {
         totalSent += node.getTotalDataSent();
     }
 
-    double throughput = simTime > 0 ? static_cast<double>(totalSent) / simTime : 0.0;
+    double throughput = config.simTime > 0 ? static_cast<double>(totalSent) / config.simTime : 0.0;
     std::cout << "Total data sent: " << totalSent << "\n";
     std::cout << "Average throughput: " << throughput << " units/tick\n\n";
 }
