@@ -11,7 +11,7 @@ public:
     Node(int nodeId, std::vector<Channel>& channels)
     : id(nodeId),
       channels(channels),
-      dataToSend(100),
+      dataToSend(0),
       totalDataSent(0) {}
 
     virtual void update(int time) = 0;

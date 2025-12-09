@@ -36,7 +36,7 @@ void DFDMNode::update(int time) {
     // if another node is requesting channels, free up some of ours
     if (channels[0].readState() != 0) {
         int broadcasting = numBroadcastingNodes();
-        // each node should relinquish numChannels / numBroadcasting(numBroadcasting+1) channels
+        // each node should relinquish C / n(n+1) channels
         int release = (channels.size() - 1) / (broadcasting * (broadcasting + 1));
         for (auto i : currentChannels) {
             if (release <= 0 || currentChannels.empty())
