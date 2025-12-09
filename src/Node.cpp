@@ -2,29 +2,6 @@
 
 #include <algorithm>
 
-namespace {
-constexpr int kMinPacketSize = 5;
-constexpr int kMaxPacketSize = 20;
-constexpr int kMinIdleGap = 3;
-constexpr int kMaxIdleGap = 8;
-}
-
-Node::Node(int nodeId)
-    : id(nodeId),
-      remainingData(0),
-      assignedChannels(0),
-      nextDataArrivalTime(0),
-      isBroadcasting(false),
-      totalDataSent(0) {}
-
-void Node::update(int time) {
-    if (!isBroadcasting && time >= nextDataArrivalTime) {
-        remainingData = randomInRange(kMinPacketSize, kMaxPacketSize);
-        isBroadcasting = true;
-        scheduleNextArrival(time);
-    }
-}
-
 int Node::transmit(int requestedChannels) {
     if (!isBroadcasting || requestedChannels <= 0) {
         assignedChannels = 0;

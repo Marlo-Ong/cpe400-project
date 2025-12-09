@@ -1,28 +1,25 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "DynamicFDM.h"
 #include "Simulation.h"
-#include "TDMA.h"
+#include "Protocol.h"
 
 int parseArg(char* value, int fallback);
-Config getConfig(int argc, char* argv[]);
+Simulation::Config getConfig(int argc, char* argv[]);
 
 int main(int argc, char* argv[]) {
-    Config config = getConfig(argc, argv);
+    Simulation::Config config = getConfig(argc, argv);
 
     std::cout << "Running with " << config.numNodes << " nodes, "
-              << config.simTime << " ticks, " << config.totalChannels << " channels.\n\n";
+              << config.simTime << " ticks, " << config.numChannels << " channels.\n\n";
 
     // run simulation with *custom* dynamic frequency-division multiplexing algorithm
-    DynamicFDM dynamicProtocol;
-    Simulation dynamicSim(config, dynamicProtocol);
+    Simulation dynamicSim(config, Protocol::Type::DynamicFDM);
     dynamicSim.run();
     dynamicSim.printResults();
 
     // run simulation with time-division multiplexing algorithm
-    TDMA tdmaProtocol;
-    Simulation tdmaSim(config, tdmaProtocol);
+    Simulation tdmaSim(config, Protocol::Type::TDMA);
     tdmaSim.run();
     tdmaSim.printResults();
 
@@ -30,12 +27,11 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-Config getConfig(int argc, char* argv[]) {
+Simulation::Config getConfig(int argc, char* argv[]) {
     int numNodes = 6;
     int simTime = 200;
-    int totalChannels = 12;
+    int numChannels = 12;
 
-    // parse simulation parameters from command line
     if (argc > 1) {
         numNodes = parseArg(argv[1], numNodes);
     }
@@ -43,10 +39,10 @@ Config getConfig(int argc, char* argv[]) {
         simTime = parseArg(argv[2], simTime);
     }
     if (argc > 3) {
-        totalChannels = parseArg(argv[3], totalChannels);
+        numChannels = parseArg(argv[3], numChannels);
     }
 
-    return {numNodes = numNodes, simTime = simTime, totalChannels = totalChannels};
+    return {numNodes = numNodes, simTime = simTime, numChannels = numChannels};
 }
 
 int parseArg(char* value, int fallback) {

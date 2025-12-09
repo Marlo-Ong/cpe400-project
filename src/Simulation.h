@@ -3,26 +3,28 @@
 
 #include <vector>
 
-#include "Node.h"
 #include "Protocol.h"
-
-struct Config {
-    int numNodes;
-    int simTime;
-    int totalChannels;
-};
+#include "Node.h"
+#include "Channel.h"
 
 class Simulation {
 public:
-    Simulation(Config config, Protocol& protocol);
+    struct Config {
+        int numNodes;
+        int simTime;
+        int numChannels;
+    };
+
+    Simulation(Config config, Protocol::Type protocol);
 
     void run();
     void printResults() const;
 
 private:
     Config config;
-    Protocol& protocol;
-    std::vector<Node> nodes;
+    Protocol::Type protocol;
+    std::vector<Channel> channels;
+    std::vector<std::unique_ptr<Node>> nodes;
 };
 
 #endif

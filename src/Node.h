@@ -5,9 +5,15 @@
 
 class Node {
 public:
-    explicit Node(int nodeId);
+    Node(int nodeId)
+    : id(nodeId),
+      remainingData(0),
+      assignedChannels(0),
+      nextDataArrivalTime(0),
+      isBroadcasting(false),
+      totalDataSent(0) {}
 
-    void update(int time);
+    virtual void update() = 0;
     int transmit(int requestedChannels);
 
     int getId() const;
@@ -16,13 +22,17 @@ public:
     bool broadcasting() const;
     int getTotalDataSent() const;
 
-private:
+protected:
     int id;
     int remainingData;
     int assignedChannels;
     int nextDataArrivalTime;
     bool isBroadcasting;
     int totalDataSent;
+    static constexpr int kMinPacketSize = 5;
+    static constexpr int kMaxPacketSize = 20;
+    static constexpr int kMinIdleGap = 3;
+    static constexpr int kMaxIdleGap = 8;
 
     void scheduleNextArrival(int currentTime);
     static int randomInRange(int min, int max);

@@ -3,14 +3,42 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "Node.h"
+#include "DynamicFDMNode.h"
+#include "TDMANode.h"
 
 class Protocol {
-public:
-    virtual ~Protocol() {}
-    virtual void update(std::vector<Node>& nodes, int time, int totalChannels) = 0;
-    virtual std::string name() const = 0;
+    public: 
+
+    enum Type {
+        DynamicFDM,
+        TDMA,
+    };
+
+    static std::string name(Type type) {
+        switch (type) {
+            case Type::DynamicFDM:
+                return "Dynamic FDM";
+            case Type::TDMA:
+                return "TDMA";
+            default:
+                exit(1);
+        }
+    }
+
+    static std::unique_ptr<Node> node(Type type){
+        static int id_num = 0;
+        switch (type) {
+            case Type::DynamicFDM:
+                return std::make_unique<DynamicFDMNode>(id_num++);
+            case Type::TDMA:
+                return std::make_unique<DynamicFDMNode>(id_num++);
+            default:
+                exit(1);
+        }
+    }
 };
 
 #endif
