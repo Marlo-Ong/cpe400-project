@@ -12,10 +12,6 @@ Simulation::Simulation(Config config, Protocol::Type protocol)
         channels.emplace_back();
     }
 
-    initializeNodes(protocol);
-}
-
-void Simulation::initializeNodes(Protocol::Type protocol) {
     switch (protocol) {
         case Protocol::Type::DynamicFDM:
             initializeDynamicFDM();

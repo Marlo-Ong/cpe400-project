@@ -4,6 +4,8 @@
 #include "Node.h"
 
 class DynamicFDMNode : public Node {
+    // The zeroth channel is used for coordination between nodes
+    static constexpr int coordinationChannel = 0;
 public: 
 
     DynamicFDMNode(int nodeId, std::vector<Channel>& channels)

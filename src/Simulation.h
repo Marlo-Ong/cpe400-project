@@ -26,7 +26,6 @@ private:
     std::vector<Channel> channels;
     std::vector<std::unique_ptr<Node>> nodes;
 
-    void initializeNodes(Protocol::Type protocol);
     void initializeDynamicFDM();
     void initializeTDMA();
 
