@@ -23,8 +23,22 @@ public:
 private:
     Config config;
     Protocol::Type protocol;
-    std::vector<Channel> channels;
+    std::vector<std::shared_ptr<Channel>> channels;
     std::vector<std::unique_ptr<Node>> nodes;
+
+    void initializeNodes(Protocol::Type protocol);
+    void initializeDynamicFDM();
+    void initializeTDMA();
+
+    int nextArrivalTime(int currentTime);
+    static int randomInRange(int min, int max);
+
+    static std::mt19937& generator();
+
+    static constexpr int kMinPacketSize = 5;
+    static constexpr int kMaxPacketSize = 20;
+    static constexpr int kMinIdleGap = 3;
+    static constexpr int kMaxIdleGap = 8;
 };
 
 #endif

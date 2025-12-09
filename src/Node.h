@@ -2,19 +2,21 @@
 #define NODE_H
 
 #include <random>
+#include <memory>
+#include "Channel.h"
+#include <iostream>
 
 class Node {
 public:
-    Node(int nodeId)
+    Node(int nodeId, std::shared_ptr<std::vector<Channel>> channels)
     : id(nodeId),
+      channels(channels),
       remainingData(0),
-      assignedChannels(0),
-      nextDataArrivalTime(0),
-      isBroadcasting(false),
-      totalDataSent(0) {}
+      totalDataSent(0) {
+        std::cout << "ch size: " << channels->size() << std::endl;
+      }
 
-    virtual void update() = 0;
-    int transmit(int requestedChannels);
+    virtual void update(int time) = 0;
 
     int getId() const;
     int getRemainingData() const;
@@ -23,21 +25,10 @@ public:
     int getTotalDataSent() const;
 
 protected:
-    int id;
+    const int id;
+    std::shared_ptr<std::vector<Channel>> channels;
     int remainingData;
-    int assignedChannels;
-    int nextDataArrivalTime;
-    bool isBroadcasting;
     int totalDataSent;
-    static constexpr int kMinPacketSize = 5;
-    static constexpr int kMaxPacketSize = 20;
-    static constexpr int kMinIdleGap = 3;
-    static constexpr int kMaxIdleGap = 8;
-
-    void scheduleNextArrival(int currentTime);
-    static int randomInRange(int min, int max);
-
-    static std::mt19937& generator();
 };
 
 #endif

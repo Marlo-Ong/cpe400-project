@@ -1,6 +1,15 @@
 #include "TDMANode.h"
+#include <iostream>
 
-void TDMANode::update() {
+void TDMANode::update(int time) {
+    if (isAssigned(time)) {
+        for(auto channel : *channels) {
+            channel.writeState(id);
+            totalDataSent++;
+        }
+        std::cout << "Node " << id << " sent data. Total sent: " << totalDataSent << "." << std::endl;
+
+    }
     // if (!isBroadcasting && time >= nextDataArrivalTime) {
     //     remainingData = randomInRange(kMinPacketSize, kMaxPacketSize);
     //     isBroadcasting = true;
@@ -20,4 +29,8 @@ void TDMANode::update() {
     //     }
     // }
 
+}
+
+bool TDMANode::isAssigned(int time) {
+    return time % numNodes == assignedTime;
 }

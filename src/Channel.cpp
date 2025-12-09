@@ -1,13 +1,18 @@
 #include "Channel.h"
 
-bool Channel::isLocked() {
-    return locked;
+int Channel::readState() {
+    return currentState;
 }
 
-void Channel::lock() {
-    locked = true;
+void Channel::writeState(int packet) {
+    if (nextState == 0) {
+        nextState = packet;
+    } else {
+        nextState = -1;
+    }
 }
 
-void Channel::unlock() {
-    locked = false;
+void Channel::advanceState() {
+    currentState = nextState;
+    nextState = 0;
 }

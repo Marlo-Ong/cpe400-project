@@ -2,14 +2,18 @@
 #define CHANNEL
 
 class Channel {
-    bool locked;
+    // If the state is 0, the channel is unused
+    // If the state is -1, a collision occured
+    // Otherwise, the number in state is the id of the node who last sent a packet 
+    int currentState;
+    int nextState;
 
 public:
-    Channel() : locked(false) {}
+    Channel() : currentState(0), nextState(0) {}
 
-    bool isLocked();
-    void lock();
-    void unlock();
+    int readState();
+    void writeState(int packet);
+    void advanceState();
 };
 
 #endif

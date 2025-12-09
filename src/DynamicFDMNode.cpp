@@ -1,6 +1,6 @@
 #include "DynamicFDMNode.h"
 
-void DynamicFDMNode::update() {
+void DynamicFDMNode::update(int time) {
     // if (!isBroadcasting && time >= nextDataArrivalTime) {
     //     remainingData = randomInRange(kMinPacketSize, kMaxPacketSize);
     //     isBroadcasting = true;

@@ -6,10 +6,10 @@
 class DynamicFDMNode : public Node {
 public: 
 
-    DynamicFDMNode(int nodeId)
-    : Node(nodeId) {}
+    DynamicFDMNode(int nodeId, std::shared_ptr<std::vector<Channel>> channels)
+    : Node(nodeId, channels) {}
 
-    void update() override;
+    void update(int time) override;
 };
 
 
