@@ -2,42 +2,30 @@
 
 #include <algorithm>
 
-void DynamicFDM::update(std::vector<Node> &nodes, int /*time*/, int totalChannels)
+// DynamicFDM splits spectrum evenly among all currently broadcasting nodes.
+void DynamicFDM::update(std::vector<Node> &nodes, std::vector<Channel> &channels, int /*time*/)
 {
-    // Count the number of nodes currently broadcasting
-    int broadcastingNodes = 0;
-    for (const auto &node : nodes)
+    std::vector<int> activeIndices;
+    activeIndices.reserve(nodes.size());
+    for (int i = 0; i < static_cast<int>(nodes.size()); ++i)
     {
-        if (node.broadcasting())
+        if (nodes[i].broadcasting())
         {
-            ++broadcastingNodes;
+            activeIndices.push_back(i);
         }
     }
 
-    // No one is broadcasting
-    if (broadcastingNodes == 0 || totalChannels <= 0)
+    if (activeIndices.empty())
     {
-        for (auto &node : nodes)
-        {
-            node.transmit(0);
-        }
         return;
     }
 
-    // Split among remaining channels
-    int numChannels = std::max(1, totalChannels / broadcastingNodes);
-
-    for (auto &node : nodes)
+    // Assign each physical channel to a broadcasting node in round-robin fashion.
+    for (auto &channel : channels)
     {
-        if (node.broadcasting())
-        {
-            // Active nodes all get the same share of channels
-            node.transmit(numChannels);
-        }
-        else
-        {
-            node.transmit(0);
-        }
+        int ownerIndex = activeIndices[channel.id() % static_cast<int>(activeIndices.size())];
+        channel.assign(nodes[ownerIndex].getId());
+        nodes[ownerIndex].addChannel(channel.id());
     }
 }
 

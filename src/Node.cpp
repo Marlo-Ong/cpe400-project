@@ -24,9 +24,10 @@ void Node::update(int time)
     }
 }
 
-int Node::transmit(int requestedChannels)
+int Node::transmit()
 {
-    // Ignore requests that arrive while idle or that allocate no bandwidth
+    int requestedChannels = static_cast<int>(ownedChannels.size());
+    // Ignore transmissions when idle or when no channels are owned.
     if (!isBroadcasting || requestedChannels <= 0)
     {
         assignedChannels = 0;
@@ -35,7 +36,7 @@ int Node::transmit(int requestedChannels)
 
     assignedChannels = requestedChannels;
 
-    // Consume as much of the packet as the allocated bandwidth allows
+    // Consume as much of the packet as the allocated bandwidth allows.
     int sent = currentPacket.transmit(requestedChannels);
     remainingData = currentPacket.remaining();
     totalDataSent += sent;
@@ -59,6 +60,18 @@ int Node::getAssignedChannels() const { return assignedChannels; }
 bool Node::broadcasting() const { return isBroadcasting; }
 
 int Node::getTotalDataSent() const { return totalDataSent; }
+
+void Node::clearChannels()
+{
+    ownedChannels.clear();
+    assignedChannels = 0;
+}
+
+void Node::addChannel(int channelId)
+{
+    ownedChannels.push_back(channelId);
+    assignedChannels = static_cast<int>(ownedChannels.size());
+}
 
 void Node::scheduleNextArrival(int currentTime)
 {

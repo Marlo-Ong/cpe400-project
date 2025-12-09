@@ -1,13 +1,18 @@
 #include "TDMA.h"
 
-void TDMA::update(std::vector<Node> &nodes, int time, int /*totalChannels*/)
+// TDMA allows exactly one node to own a single channel in each time slice.
+void TDMA::update(std::vector<Node> &nodes, std::vector<Channel> &channels, int time)
 {
-    if (nodes.empty())
+    if (nodes.empty() || channels.empty())
         return;
 
-    // Only allow the node in the current timeslot to transmit
     int slot = time % nodes.size();
-    nodes[slot].transmit(1);
+    if (!nodes[slot].broadcasting())
+        return;
+
+    // Grant the first channel to the scheduled node.
+    channels.front().assign(nodes[slot].getId());
+    nodes[slot].addChannel(channels.front().id());
 }
 
 std::string TDMA::name() const

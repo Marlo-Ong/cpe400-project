@@ -5,24 +5,42 @@
 
 Simulation::Simulation(Config config, Protocol &protocol) : config(config), protocol(protocol)
 {
-    // Build the node population
+    // Build the node population and the physical channel list.
     nodes.reserve(config.numNodes);
     for (int i = 0; i < config.numNodes; ++i)
     {
         nodes.emplace_back(i);
     }
+
+    channels.reserve(config.totalChannels);
+    for (int i = 0; i < config.totalChannels; ++i)
+    {
+        channels.emplace_back(i);
+    }
 }
 
 void Simulation::run()
 {
-    // main simulation loop
+    // Main simulation loop: nodes generate traffic, protocol assigns channels, nodes transmit.
     for (int t = 0; t < config.simTime; ++t)
     {
         for (auto &node : nodes)
         {
             node.update(t);
+            node.clearChannels();
         }
-        protocol.update(nodes, t, config.totalChannels);
+
+        for (auto &channel : channels)
+        {
+            channel.release();
+        }
+
+        protocol.update(nodes, channels, t);
+
+        for (auto &node : nodes)
+        {
+            node.transmit();
+        }
     }
 }
 

@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "Channel.h"
 #include "Node.h"
 #include "Protocol.h"
 
@@ -26,6 +27,7 @@ private:
     Config config;
     Protocol &protocol;
     std::vector<Node> nodes;
+    std::vector<Channel> channels;
 };
 
 #endif

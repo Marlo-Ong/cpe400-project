@@ -2,6 +2,7 @@
 #define NODE_H
 
 #include <random>
+#include <vector>
 
 #include "Packet.h"
 
@@ -11,7 +12,9 @@ public:
   explicit Node(int nodeId);
 
   void update(int time);
-  int transmit(int requestedChannels);
+  int transmit();
+  void clearChannels();
+  void addChannel(int channelId);
 
   int getId() const;
   int getRemainingData() const;
@@ -27,6 +30,7 @@ private:
   bool isBroadcasting;
   int totalDataSent;
   Packet currentPacket;
+  std::vector<int> ownedChannels;
   static constexpr int kMinPacketSize = 5;
   static constexpr int kMaxPacketSize = 20;
   static constexpr int kMinIdleGap = 3;

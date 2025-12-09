@@ -5,7 +5,7 @@
 
 class DynamicFDM : public Protocol {
 public:
-    void update(std::vector<Node>& nodes, int time, int totalChannels) override;
+    void update(std::vector<Node>& nodes, std::vector<Channel>& channels, int time) override;
     std::string name() const override;
 };
 
