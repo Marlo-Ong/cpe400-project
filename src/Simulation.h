@@ -30,6 +30,7 @@ private:
 
     void initializeDFDM();
     void initializeTDMA();
+    void initializeFDMA();
     void injectRandomTraffic();
 
     int nextArrivalTime(int currentTime);

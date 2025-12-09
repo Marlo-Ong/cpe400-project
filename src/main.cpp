@@ -23,6 +23,11 @@ int main(int argc, char* argv[]) {
     tdmaSim.run();
     tdmaSim.printResults();
 
+    // run simulation with frequency-division multiplexing algorithm
+    Simulation fdmaSim(config, Protocol::Type::FDMA);
+    fdmaSim.run();
+    fdmaSim.printResults();
+
     std::cout << "Simulation complete.\n";
     return 0;
 }

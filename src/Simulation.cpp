@@ -5,6 +5,8 @@
 #include <numeric>
 #include <random>
 
+#include "FDMANode.h"
+
 Simulation::Simulation(Config config, Protocol::Type protocol)
     : config(config), protocol(protocol), channels(), cumulativeActiveNodes(0.0) {
     nodes.reserve(config.numNodes);
@@ -21,6 +23,10 @@ Simulation::Simulation(Config config, Protocol::Type protocol)
 
         case Protocol::Type::TDMA:
             initializeTDMA();
+        break;
+
+        case Protocol::Type::FDMA:
+            initializeFDMA();
         break;
 
         default:
@@ -45,6 +51,13 @@ void Simulation::initializeTDMA() {
             config.numNodes,
             i
         ));
+    }
+}
+
+void Simulation::initializeFDMA() {
+    int nodeId = 1;
+    for (int i = 0; i < config.numNodes; ++i) {
+        nodes.push_back(std::make_unique<FDMANode>(nodeId++, channels, config.numNodes));
     }
 }
 
