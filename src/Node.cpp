@@ -2,43 +2,49 @@
 
 #include <algorithm>
 
-namespace {
-constexpr int kMinPacketSize = 5;
-constexpr int kMaxPacketSize = 20;
-constexpr int kMinIdleGap = 3;
-constexpr int kMaxIdleGap = 8;
-}
-
 Node::Node(int nodeId)
     : id(nodeId),
       remainingData(0),
       assignedChannels(0),
       nextDataArrivalTime(0),
       isBroadcasting(false),
-      totalDataSent(0) {}
+      totalDataSent(0),
+      currentPacket() {}
 
-void Node::update(int time) {
-    if (!isBroadcasting && time >= nextDataArrivalTime) {
-        remainingData = randomInRange(kMinPacketSize, kMaxPacketSize);
+void Node::update(int time)
+{
+    // When idle and the next arrival time is reached, create packet
+    if (!isBroadcasting && time >= nextDataArrivalTime)
+    {
+        int packetSize = randomInRange(kMinPacketSize, kMaxPacketSize);
+        currentPacket = Packet(packetSize);
+        remainingData = currentPacket.remaining();
         isBroadcasting = true;
         scheduleNextArrival(time);
     }
 }
 
-int Node::transmit(int requestedChannels) {
-    if (!isBroadcasting || requestedChannels <= 0) {
+int Node::transmit(int requestedChannels)
+{
+    // Ignore requests that arrive while idle or that allocate no bandwidth
+    if (!isBroadcasting || requestedChannels <= 0)
+    {
         assignedChannels = 0;
         return 0;
     }
 
     assignedChannels = requestedChannels;
-    int sent = std::min(remainingData, requestedChannels);
-    remainingData -= sent;
+
+    // Consume as much of the packet as the allocated bandwidth allows
+    int sent = currentPacket.transmit(requestedChannels);
+    remainingData = currentPacket.remaining();
     totalDataSent += sent;
 
-    if (remainingData == 0) {
+    if (currentPacket.empty())
+    {
         isBroadcasting = false;
         assignedChannels = 0;
+        remainingData = 0;
     }
 
     return sent;
@@ -54,16 +60,20 @@ bool Node::broadcasting() const { return isBroadcasting; }
 
 int Node::getTotalDataSent() const { return totalDataSent; }
 
-void Node::scheduleNextArrival(int currentTime) {
+void Node::scheduleNextArrival(int currentTime)
+{
     nextDataArrivalTime = currentTime + randomInRange(kMinIdleGap, kMaxIdleGap);
 }
 
-int Node::randomInRange(int min, int max) {
+int Node::randomInRange(int min, int max)
+{
+    // basic helper for uniformly distributed arrival/size parameters
     std::uniform_int_distribution<int> dist(min, max);
     return dist(generator());
 }
 
-std::mt19937& Node::generator() {
+std::mt19937 &Node::generator()
+{
     static std::mt19937 gen(std::random_device{}());
     return gen;
 }

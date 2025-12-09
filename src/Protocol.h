@@ -6,10 +6,12 @@
 
 #include "Node.h"
 
-class Protocol {
+// Base class for a concrete multiple-access protocol implementation
+class Protocol
+{
 public:
     virtual ~Protocol() {}
-    virtual void update(std::vector<Node>& nodes, int time, int totalChannels) = 0;
+    virtual void update(std::vector<Node> &nodes, int time, int totalChannels) = 0;
     virtual std::string name() const = 0;
 };
 

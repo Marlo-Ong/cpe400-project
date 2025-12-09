@@ -4,6 +4,7 @@
 
 void DynamicFDM::update(std::vector<Node> &nodes, int /*time*/, int totalChannels)
 {
+    // Count the number of nodes currently broadcasting
     int broadcastingNodes = 0;
     for (const auto &node : nodes)
     {
@@ -13,6 +14,7 @@ void DynamicFDM::update(std::vector<Node> &nodes, int /*time*/, int totalChannel
         }
     }
 
+    // No one is broadcasting
     if (broadcastingNodes == 0 || totalChannels <= 0)
     {
         for (auto &node : nodes)
@@ -22,13 +24,15 @@ void DynamicFDM::update(std::vector<Node> &nodes, int /*time*/, int totalChannel
         return;
     }
 
-    int baseChannels = std::max(1, totalChannels / broadcastingNodes);
+    // Split among remaining channels
+    int numChannels = std::max(1, totalChannels / broadcastingNodes);
 
     for (auto &node : nodes)
     {
         if (node.broadcasting())
         {
-            node.transmit(baseChannels);
+            // Active nodes all get the same share of channels
+            node.transmit(numChannels);
         }
         else
         {
@@ -39,5 +43,6 @@ void DynamicFDM::update(std::vector<Node> &nodes, int /*time*/, int totalChannel
 
 std::string DynamicFDM::name() const
 {
+    // Label used when printing results.
     return "Dynamic-FDM";
 }

@@ -6,22 +6,25 @@
 #include "Node.h"
 #include "Protocol.h"
 
-struct Config {
+struct Config
+{
     int numNodes;
     int simTime;
     int totalChannels;
 };
 
-class Simulation {
+// Runs the given protocol using the configurable data
+class Simulation
+{
 public:
-    Simulation(Config config, Protocol& protocol);
+    Simulation(Config config, Protocol &protocol);
 
     void run();
     void printResults() const;
 
 private:
     Config config;
-    Protocol& protocol;
+    Protocol &protocol;
     std::vector<Node> nodes;
 };
 

@@ -3,28 +3,36 @@
 #include <iostream>
 #include <numeric>
 
-Simulation::Simulation(Config config, Protocol& protocol)
-    : config(config), protocol(protocol) {
+Simulation::Simulation(Config config, Protocol &protocol) : config(config), protocol(protocol)
+{
+    // Build the node population
     nodes.reserve(config.numNodes);
-    for (int i = 0; i < config.numNodes; ++i) {
+    for (int i = 0; i < config.numNodes; ++i)
+    {
         nodes.emplace_back(i);
     }
 }
 
-void Simulation::run() {
-    for (int t = 0; t < config.simTime; ++t) {
-        for (auto& node : nodes) {
+void Simulation::run()
+{
+    // main simulation loop
+    for (int t = 0; t < config.simTime; ++t)
+    {
+        for (auto &node : nodes)
+        {
             node.update(t);
         }
         protocol.update(nodes, t, config.totalChannels);
     }
 }
 
-void Simulation::printResults() const {
+void Simulation::printResults() const
+{
     std::cout << "Protocol: " << protocol.name() << "\n";
 
     int totalSent = 0;
-    for (const auto& node : nodes) {
+    for (const auto &node : nodes)
+    {
         std::cout << "Node " << node.getId() << " sent " << node.getTotalDataSent() << " units\n";
         totalSent += node.getTotalDataSent();
     }
