@@ -6,20 +6,20 @@
 #include <memory>
 
 #include "Node.h"
-#include "DynamicFDMNode.h"
+#include "DFDMNode.h"
 #include "TDMANode.h"
 
 class Protocol {
     public: 
 
     enum Type {
-        DynamicFDM,
+        DFDM,
         TDMA,
     };
 
     static std::string name(Type type) {
         switch (type) {
-            case Type::DynamicFDM:
+            case Type::DFDM:
                 return "Dynamic FDM";
             case Type::TDMA:
                 return "TDMA";

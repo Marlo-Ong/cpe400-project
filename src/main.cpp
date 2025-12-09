@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
               << config.simTime << " ticks, " << config.numChannels << " channels.\n\n";
 
     // run simulation with *custom* dynamic frequency-division multiplexing algorithm
-    Simulation dynamicSim(config, Protocol::Type::DynamicFDM);
+    Simulation dynamicSim(config, Protocol::Type::DFDM);
     dynamicSim.run();
     dynamicSim.printResults();
 
@@ -28,9 +28,9 @@ int main(int argc, char* argv[]) {
 }
 
 Simulation::Config getConfig(int argc, char* argv[]) {
-    int numNodes = 6;
-    int simTime = 200;
-    int numChannels = 12;
+    int numNodes = 10;
+    int simTime = 1000;
+    int numChannels = 50;
 
     if (argc > 1) {
         numNodes = parseArg(argv[1], numNodes);

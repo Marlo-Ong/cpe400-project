@@ -26,7 +26,7 @@ private:
     std::vector<Channel> channels;
     std::vector<std::unique_ptr<Node>> nodes;
 
-    void initializeDynamicFDM();
+    void initializeDFDM();
     void initializeTDMA();
 
     int nextArrivalTime(int currentTime);

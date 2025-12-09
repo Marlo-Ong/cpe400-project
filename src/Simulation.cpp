@@ -13,8 +13,8 @@ Simulation::Simulation(Config config, Protocol::Type protocol)
     }
 
     switch (protocol) {
-        case Protocol::Type::DynamicFDM:
-            initializeDynamicFDM();
+        case Protocol::Type::DFDM:
+            initializeDFDM();
         break;
 
         case Protocol::Type::TDMA:
@@ -26,10 +26,10 @@ Simulation::Simulation(Config config, Protocol::Type protocol)
     }
 }
 
-void Simulation::initializeDynamicFDM() {
+void Simulation::initializeDFDM() {
     int nodeId = 1;
     for (int i = 0; i < config.numNodes; i++) {
-        nodes.push_back(std::make_unique<DynamicFDMNode>(nodeId++, channels));
+        nodes.push_back(std::make_unique<DFDMNode>(nodeId++, channels));
     }
 }
 
