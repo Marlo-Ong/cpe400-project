@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <numeric>
+#include <random>
 
 Simulation::Simulation(Config config, Protocol::Type protocol)
     : config(config), protocol(protocol), channels() {
@@ -48,6 +49,7 @@ void Simulation::initializeTDMA() {
 
 void Simulation::run() {
     for (int t = 0; t < config.simTime; ++t) {
+        injectRandomTraffic();
         for (auto& node : nodes) {
             node->update(t);
         }
@@ -80,4 +82,29 @@ int Simulation::randomInRange(int min, int max) {
 std::mt19937& Simulation::generator() {
     static std::mt19937 gen(std::random_device{}());
     return gen;
+}
+
+void Simulation::injectRandomTraffic()
+{
+    if (nodes.empty())
+    {
+        return;
+    }
+
+    std::uniform_real_distribution<double> choiceDist(0.0, 1.0);
+    std::uniform_int_distribution<int> payloadDist(15, kMaxPacketSize);
+    const double injectionProbability = 0.2;
+    
+    if (choiceDist(generator()) < injectionProbability)
+    {
+        return;
+    }
+
+    for (auto &node : nodes)
+    {
+        if (choiceDist(generator()) < injectionProbability)
+        {
+            node->injectData(payloadDist(generator()));
+        }
+    }
 }

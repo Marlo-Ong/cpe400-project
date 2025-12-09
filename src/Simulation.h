@@ -2,6 +2,7 @@
 #define SIMULATION_H
 
 #include <vector>
+#include <random>
 
 #include "Protocol.h"
 #include "Node.h"
@@ -28,6 +29,7 @@ private:
 
     void initializeDynamicFDM();
     void initializeTDMA();
+    void injectRandomTraffic();
 
     int nextArrivalTime(int currentTime);
     static int randomInRange(int min, int max);
