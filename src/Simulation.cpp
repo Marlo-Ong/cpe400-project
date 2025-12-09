@@ -1,10 +1,12 @@
 #include "Simulation.h"
 
+#include <iomanip>
 #include <iostream>
 #include <numeric>
+#include <random>
 
 Simulation::Simulation(Config config, Protocol::Type protocol)
-    : config(config), protocol(protocol), channels() {
+    : config(config), protocol(protocol), channels(), cumulativeActiveNodes(0.0) {
     nodes.reserve(config.numNodes);
 
     channels.reserve(config.numChannels);
@@ -48,6 +50,14 @@ void Simulation::initializeTDMA() {
 
 void Simulation::run() {
     for (int t = 0; t < config.simTime; ++t) {
+        injectRandomTraffic();
+        int activeNodes = 0;
+        for (const auto& node : nodes) {
+            if (node->getdataToSend() > 0) {
+                ++activeNodes;
+            }
+        }
+        cumulativeActiveNodes += activeNodes;
         for (auto& node : nodes) {
             node->update(t);
         }
@@ -55,7 +65,7 @@ void Simulation::run() {
 }
 
 void Simulation::printResults() const {
-    std::cout << "Protocol: " << Protocol::name(protocol) << "\n";
+    std::cout << "=== PROTOCOL: " << Protocol::name(protocol) << " ===\n";
 
     int totalSent = 0;
     for (const auto& node : nodes) {
@@ -64,8 +74,30 @@ void Simulation::printResults() const {
     }
 
     double throughput = config.simTime > 0 ? static_cast<double>(totalSent) / config.simTime : 0.0;
-    std::cout << "Total data sent: " << totalSent << "\n";
-    std::cout << "Average throughput: " << throughput << " units/tick\n\n";
+    std::cout << "\nTotal data sent: " << totalSent << "\n";
+    std::cout << "Average throughput: " << throughput << " units/tick\n";
+
+    double channelRate = static_cast<double>(config.numChannels);
+    double averageActive = config.simTime > 0 ? cumulativeActiveNodes / config.simTime : 0.0;
+    double idealShare = averageActive > 0.0 ? channelRate / averageActive : channelRate;
+
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "Channel rate R: " << channelRate << " units/tick\n";
+    std::cout << "Average active nodes M: " << averageActive << "\n";
+    std::cout << "Ideal per-node throughput R/M: " << idealShare << " units/tick\n\n";
+
+    for (const auto& node : nodes) {
+        double nodeThroughput = config.simTime > 0
+                                    ? static_cast<double>(node->getTotalDataSent()) / config.simTime
+                                    : 0.0;
+        double ratioToR = channelRate > 0.0 ? (nodeThroughput / channelRate) * 100.0 : 0.0;
+        double ratioToIdeal = idealShare > 0.0 ? (nodeThroughput / idealShare) * 100.0 : 0.0;
+        std::cout << "Node " << node->getId() << " avg throughput: " << nodeThroughput
+                  << " units/tick (" << ratioToR << "% of R, " << ratioToIdeal
+                  << "% of R/M)\n";
+    }
+
+    std::cout << "\n";
 }
 
 int Simulation::nextArrivalTime(int currentTime) {
@@ -80,4 +112,29 @@ int Simulation::randomInRange(int min, int max) {
 std::mt19937& Simulation::generator() {
     static std::mt19937 gen(std::random_device{}());
     return gen;
+}
+
+void Simulation::injectRandomTraffic()
+{
+    if (nodes.empty())
+    {
+        return;
+    }
+
+    std::uniform_real_distribution<double> choiceDist(0.0, 1.0);
+    std::uniform_int_distribution<int> payloadDist(15, kMaxPacketSize);
+    const double injectionProbability = 0.2;
+    
+    if (choiceDist(generator()) < injectionProbability)
+    {
+        return;
+    }
+
+    for (auto &node : nodes)
+    {
+        if (choiceDist(generator()) < injectionProbability)
+        {
+            node->injectData(payloadDist(generator()));
+        }
+    }
 }

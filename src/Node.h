@@ -21,6 +21,7 @@ public:
     int getAssignedChannels() const;
     bool broadcasting() const;
     int getTotalDataSent() const;
+    void injectData(int amount);
 
 protected:
     const int id;

@@ -2,6 +2,7 @@
 #define SIMULATION_H
 
 #include <vector>
+#include <random>
 
 #include "Protocol.h"
 #include "Node.h"
@@ -25,9 +26,11 @@ private:
     Protocol::Type protocol;
     std::vector<Channel> channels;
     std::vector<std::unique_ptr<Node>> nodes;
+    double cumulativeActiveNodes;
 
     void initializeDFDM();
     void initializeTDMA();
+    void injectRandomTraffic();
 
     int nextArrivalTime(int currentTime);
     static int randomInRange(int min, int max);
