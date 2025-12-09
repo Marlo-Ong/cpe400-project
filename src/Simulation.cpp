@@ -4,13 +4,12 @@
 #include <numeric>
 
 Simulation::Simulation(Config config, Protocol::Type protocol)
-    : config(config), protocol(protocol) {
+    : config(config), protocol(protocol), channels() {
     nodes.reserve(config.numNodes);
 
-    channels = std::make_shared<std::vector<Channel>>();
-    channels->reserve(config.numChannels);
+    channels.reserve(config.numChannels);
     for (int i = 0; i < config.numChannels; i++) {
-        channels->emplace_back();
+        channels.emplace_back();
     }
 
     initializeNodes(protocol);

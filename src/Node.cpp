@@ -9,11 +9,11 @@
 //     }
 
 //     assignedChannels = requestedChannels;
-//     int sent = std::min(remainingData, requestedChannels);
-//     remainingData -= sent;
+//     int sent = std::min(dataToSend, requestedChannels);
+//     dataToSend -= sent;
 //     totalDataSent += sent;
 
-//     if (remainingData == 0) {
+//     if (dataToSend == 0) {
 //         isBroadcasting = false;
 //         assignedChannels = 0;
 //     }
@@ -23,6 +23,6 @@
 
 int Node::getId() const { return id; }
 
-int Node::getRemainingData() const { return remainingData; }
+int Node::getdataToSend() const { return dataToSend; }
 
 int Node::getTotalDataSent() const { return totalDataSent; }

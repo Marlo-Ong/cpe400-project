@@ -2,7 +2,7 @@
 
 void DynamicFDMNode::update(int time) {
     // if (!isBroadcasting && time >= nextDataArrivalTime) {
-    //     remainingData = randomInRange(kMinPacketSize, kMaxPacketSize);
+    //     dataToSend = randomInRange(kMinPacketSize, kMaxPacketSize);
     //     isBroadcasting = true;
     //     scheduleNextArrival(time);
     // }
