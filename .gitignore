@@ -1,4 +1,5 @@
 sim
+.vscode/
 
 # Prerequisites
 *.d
