@@ -7,6 +7,7 @@
 
 #include "Node.h"
 #include "DFDMNode.h"
+#include "FDMANode.h"
 #include "TDMANode.h"
 
 class Protocol {
@@ -15,6 +16,7 @@ class Protocol {
     enum Type {
         DFDM,
         TDMA,
+        FDMA,
     };
 
     static std::string name(Type type) {
@@ -23,6 +25,8 @@ class Protocol {
                 return "Dynamic FDM";
             case Type::TDMA:
                 return "TDMA";
+            case Type::FDMA:
+                return "FDMA";
             default:
                 exit(1);
         }
