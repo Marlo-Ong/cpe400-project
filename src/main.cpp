@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "DynamicFDM.h"
+#include "FDMA.h"
 #include "Simulation.h"
 #include "TDMA.h"
 
@@ -15,11 +16,17 @@ int main(int argc, char *argv[])
     std::cout << "Running with " << config.numNodes << " nodes, "
               << config.simTime << " ticks, " << config.totalChannels << " channels.\n\n";
 
-    // run simulation with custom dynamic frequency-division multiplexing algorithm (FDMA)
+    // Run simulation with custom dynamic frequency-division multiplexing algorithm
     DynamicFDM dynamicProtocol;
     Simulation dynamicSim(config, dynamicProtocol);
     dynamicSim.run();
     dynamicSim.printResults();
+
+    // Run static frequency-division allocation for comparison
+    FDMA fdmaProtocol;
+    Simulation fdmaSim(config, fdmaProtocol);
+    fdmaSim.run();
+    fdmaSim.printResults();
 
     // run simulation with time-division multiplexing algorithm (TDMA)
     TDMA tdmaProtocol;
