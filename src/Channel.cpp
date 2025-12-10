@@ -6,6 +6,7 @@ Packet Channel::readPacket() {
 
 void Channel::sendPacket(Packet packet) {
     if (nextState.first == State::Empty) {
+        nextState.first = State::Busy;
         nextState.second = packet;
     } else {
         nextState.first = State::Collided;
