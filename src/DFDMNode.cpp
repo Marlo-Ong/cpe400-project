@@ -64,8 +64,8 @@ void DFDMNode::vacateChannels() {
 std::set<int> DFDMNode::broadcastingNodes() {
     std::set<int> nodes;
 
-    for (auto channel : channels) {
-        int state = channel->readPacket().id();
+    for (auto ch : channels) {
+        int state = ch->readPacket().id();
         if (state > 0) {
             if (nodes.count(state) == 0) {
                 nodes.insert(state);
