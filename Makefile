@@ -10,7 +10,8 @@ all: $(TARGET)
 $(TARGET): $(SRCS)
 	$(CXX) $(CXXFLAGS) $(SRCS) -o $@
 
-run: $(TARGET)
+run: clean
+	make
 	./$(TARGET)
 
 clean:

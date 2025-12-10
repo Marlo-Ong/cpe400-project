@@ -6,15 +6,17 @@
 #include <set>
 
 class DFDMNode : public Node {
-    // The zeroth channel is used for coordination between nodes
-    static constexpr int coordinationChannel = 0;
+    // This channel is used for coordination between nodes
+    std::shared_ptr<Channel> coordChannel;
 
-    std::set<int> currentChannels;
+    std::set<std::shared_ptr<Channel>> currentChannels;
 
 public: 
 
     DFDMNode(int nodeId, std::vector<std::shared_ptr<Channel>> channels)
-    : Node(nodeId, channels), currentChannels() {}
+    : Node(nodeId, std::vector(channels.begin() + 1, channels.end())),
+        coordChannel(channels.at(0)),
+        currentChannels() {}
 
     void update(int time) override;
 

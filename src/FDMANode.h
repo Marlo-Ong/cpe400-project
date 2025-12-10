@@ -12,7 +12,7 @@ public:
     void update(int time) override;
 
 private:
-    std::vector<int> ownedChannels;
+    std::vector<std::shared_ptr<Channel>> ownedChannels;
 };
 
 #endif
