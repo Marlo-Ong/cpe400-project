@@ -1,19 +1,33 @@
 #ifndef CHANNEL
 #define CHANNEL
 
+#include <utility>
+#include "Packet.h"
+
 class Channel {
-    // If the state is 0, the channel is unused
-    // If the state is -1, a collision occured
-    // Otherwise, the number in state is the id of the node who last sent a packet 
-    int currentState;
-    int nextState;
-
 public:
-    Channel() : currentState(0), nextState(0) {}
+    enum State {
+        Empty,
+        Busy,
+        Collided
+    };
 
-    int readState();
-    void writeState(int packet);
+    Channel() : currentState(), nextState() {}
+
+    Packet readPacket();
+    void sendPacket(Packet packet);
     void advanceState();
+
+    bool isEmpty();
+    bool isBusy();
+    bool isCollided();
+
+private:
+    std::pair<State, Packet> currentState;
+    std::pair<State, Packet> nextState;
+  
 };
+
+
 
 #endif

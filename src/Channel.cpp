@@ -1,18 +1,23 @@
 #include "Channel.h"
 
-int Channel::readState() {
-    return currentState;
+Packet Channel::readPacket() {
+    return currentState.second;
 }
 
-void Channel::writeState(int packet) {
-    if (nextState == 0) {
-        nextState = packet;
+void Channel::sendPacket(Packet packet) {
+    if (nextState.first == State::Empty) {
+        nextState.second = packet;
     } else {
-        nextState = -1;
+        nextState.first = State::Collided;
+        nextState.second = Packet();
     }
 }
 
 void Channel::advanceState() {
     currentState = nextState;
-    nextState = 0;
+    nextState = {State::Empty, Packet()};
 }
+
+bool Channel::isEmpty() { return currentState.first == State::Empty; }
+bool Channel::isBusy() { return currentState.first == State::Busy; }
+bool Channel::isCollided() { return currentState.first == State::Collided; }

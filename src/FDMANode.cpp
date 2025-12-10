@@ -19,7 +19,7 @@ void FDMANode::update(int /*time*/) {
         if (dataToSend <= 0) {
             break;
         }
-        channels[channelIndex]->writeState(id);
+        channels[channelIndex]->sendPacket(id);
         --dataToSend;
         ++totalDataSent;
     }
