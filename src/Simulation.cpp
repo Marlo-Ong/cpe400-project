@@ -13,7 +13,7 @@ Simulation::Simulation(Config config, Protocol::Type protocol)
 
     channels.reserve(config.numChannels);
     for (int i = 0; i < config.numChannels; i++) {
-        channels.emplace_back();
+        channels.push_back(std::make_shared<Channel>());
     }
 
     switch (protocol) {

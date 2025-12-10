@@ -13,7 +13,7 @@ class DFDMNode : public Node {
 
 public: 
 
-    DFDMNode(int nodeId, std::vector<Channel>& channels)
+    DFDMNode(int nodeId, std::vector<std::shared_ptr<Channel>> channels)
     : Node(nodeId, channels), currentChannels() {}
 
     void update(int time) override;

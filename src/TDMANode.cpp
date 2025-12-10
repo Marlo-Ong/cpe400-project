@@ -4,7 +4,7 @@ void TDMANode::update(int time) {
     if (isAssigned(time)) {
         for(auto channel : channels) {
             if(dataToSend > 0) {
-                channel.writeState(id);
+                channel->writeState(id);
                 totalDataSent++;
                 dataToSend--;
             }

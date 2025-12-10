@@ -24,7 +24,7 @@ public:
 private:
     Config config;
     Protocol::Type protocol;
-    std::vector<Channel> channels;
+    std::vector<std::shared_ptr<Channel>> channels;
     std::vector<std::unique_ptr<Node>> nodes;
     double cumulativeActiveNodes;
 

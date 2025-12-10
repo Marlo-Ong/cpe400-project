@@ -8,10 +8,10 @@ void DFDMNode::update(int time) {
     
     //check for available channels
     for (long unsigned int i = 1; i < channels.size(); i++) {
-        if (channels[i].readState() == 0) {
+        if (channels[i]->readState() == 0) {
             currentChannels.insert(i);
         
-        } else if (channels[i].readState() == -1) {
+        } else if (channels[i]->readState() == -1) {
             // if one of the channels we held had a collision, stop using it for now
             currentChannels.erase(i);
         }
@@ -20,7 +20,7 @@ void DFDMNode::update(int time) {
     if (!currentChannels.empty()) {
         // send data through the currently held channels
         for (auto i : currentChannels) {
-            channels[i].writeState(id);
+            channels[i]->writeState(id);
             dataToSend--;
             totalDataSent++;
             if (dataToSend <= 0) {
@@ -30,11 +30,11 @@ void DFDMNode::update(int time) {
         }
     } else {
         // request channels on commumication channel
-        channels[0].writeState(id);
+        channels[0]->writeState(id);
     }
 
     // if another node is requesting channels, free up some of ours
-    if (channels[0].readState() != 0) {
+    if (channels[0]->readState() != 0) {
         int broadcasting = numBroadcastingNodes();
         // each node should relinquish C / n(n+1) channels
         int release = (channels.size() - 1) / (broadcasting * (broadcasting + 1));
@@ -49,7 +49,7 @@ void DFDMNode::update(int time) {
 
 void DFDMNode::vacateChannels() {
     for (auto i : currentChannels) {
-        channels[i].writeState(0);
+        channels[i]->writeState(0);
     }
     currentChannels.clear();
 }
@@ -59,7 +59,7 @@ int DFDMNode::numBroadcastingNodes() {
     int count = 0;
 
     for (long unsigned int i = 1; i < channels.size(); i++) {
-        int state = channels[i].readState();
+        int state = channels[i]->readState();
         if (state > 0) {
             if (seenIds.count(state) == 0) {
                 count++;

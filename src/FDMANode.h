@@ -7,7 +7,7 @@
 
 class FDMANode : public Node {
 public:
-    FDMANode(int nodeId, std::vector<Channel>& channels, int totalNodes);
+    FDMANode(int nodeId, std::vector<std::shared_ptr<Channel>> channels, int totalNodes);
 
     void update(int time) override;
 

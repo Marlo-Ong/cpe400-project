@@ -8,7 +8,7 @@
 
 class Node {
 public:
-    Node(int nodeId, std::vector<Channel>& channels)
+    Node(int nodeId, std::vector<std::shared_ptr<Channel>> channels)
     : id(nodeId),
       channels(channels),
       dataToSend(0),
@@ -25,7 +25,7 @@ public:
 
 protected:
     const int id;
-    std::vector<Channel>& channels;
+    std::vector<std::shared_ptr<Channel>> channels;
     int dataToSend;
     int totalDataSent;
 };

@@ -9,7 +9,7 @@ class TDMANode : public Node {
 
 public:
 
-    TDMANode(int nodeId, std::vector<Channel>& channels, int numNodes, int assignedTime)
+    TDMANode(int nodeId, std::vector<std::shared_ptr<Channel>> channels, int numNodes, int assignedTime)
     : Node(nodeId, channels), 
       numNodes(numNodes), 
       assignedTime(assignedTime) {}
