@@ -7,20 +7,20 @@ void DFDMNode::update(int time) {
     }
     
     //check for available channels
-    for (long unsigned int i = 1; i < channels.size(); i++) {
-        if (channels[i]->isEmpty()) {
-            currentChannels.insert(i);
+    for (auto ch : channels) {
+        if (ch->isEmpty()) {
+            currentChannels.insert(ch);
         
-        } else if (channels[i]->isCollided()) {
+        } else if (ch->isCollided()) {
             // if one of the channels we held had a collision, stop using it for now
-            currentChannels.erase(i);
+            currentChannels.erase(ch);
         }
     }
     
     if (!currentChannels.empty()) {
         // send data through the currently held channels
-        for (auto i : currentChannels) {
-            channels[i]->sendPacket(id);
+        for (auto ch : currentChannels) {
+            ch->sendPacket(id);
             dataToSend--;
             totalDataSent++;
             if (dataToSend <= 0) {
@@ -30,43 +30,48 @@ void DFDMNode::update(int time) {
         }
     } else {
         // request channels on commumication channel
-        channels[0]->sendPacket(id);
+        coordChannel->sendPacket(id);
     }
 
     // if another node is requesting channels, free up some of ours
-    if (!channels[0]->isEmpty()) {
-        int broadcasting = numBroadcastingNodes();
+    if (!coordChannel->isEmpty()) {
+
+        std::set<int> broadcasting = broadcastingNodes();
+        int numB = broadcasting.size();
+
         // each node should relinquish C / n(n+1) channels
-        int release = (channels.size() - 1) / (broadcasting * (broadcasting + 1));
-        for (auto i : currentChannels) {
+        int release = (channels.size() - 1) / (numB * (numB + 1));
+        for (auto ch : currentChannels) {
             if (release <= 0 || currentChannels.empty())
                 break;
-            currentChannels.erase(i);
+            currentChannels.erase(ch);
             release--;
         }
     }
 }
 
+void DFDMNode::allowNewcomer(int id) {
+    
+}
+
 void DFDMNode::vacateChannels() {
-    for (auto i : currentChannels) {
-        channels[i]->sendPacket(0);
+    for (auto ch : currentChannels) {
+        ch->sendPacket(0);
     }
     currentChannels.clear();
 }
 
-int DFDMNode::numBroadcastingNodes() {
-    std::set<int> seenIds;
-    int count = 0;
+std::set<int> DFDMNode::broadcastingNodes() {
+    std::set<int> nodes;
 
-    for (long unsigned int i = 1; i < channels.size(); i++) {
-        int state = channels[i]->readPacket().id();
+    for (auto channel : channels) {
+        int state = channel->readPacket().id();
         if (state > 0) {
-            if (seenIds.count(state) == 0) {
-                count++;
-                seenIds.insert(state);
+            if (nodes.count(state) == 0) {
+                nodes.insert(state);
             }
         }
     }
 
-    return count;
+    return nodes;
 }

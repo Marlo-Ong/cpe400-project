@@ -7,9 +7,9 @@
 
 class DFDMNode : public Node {
     // The zeroth channel is used for coordination between nodes
-    static constexpr int coordinationChannel = 0;
+    std::shared_ptr<Channel> coordChannel;
 
-    std::set<int> currentChannels;
+    std::set<std::shared_ptr<Channel>> currentChannels;
 
 public: 
 
@@ -20,8 +20,9 @@ public:
 
 private:
 
+    void allowNewcomer(int id);
     void vacateChannels();
-    int numBroadcastingNodes();
+    std::set<int> broadcastingNodes();
 };
 
 

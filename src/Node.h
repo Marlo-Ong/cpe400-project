@@ -18,8 +18,6 @@ public:
 
     int getId() const;
     int getdataToSend() const;
-    int getAssignedChannels() const;
-    bool broadcasting() const;
     int getTotalDataSent() const;
     void injectData(int amount);
 
